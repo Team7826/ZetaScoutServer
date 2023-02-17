@@ -23,13 +23,21 @@ def get_data():
     device, client = connect()
 
     data = device.shell('cat /storage/emulated/0/Documents/zetascout.json')
+    print(data)
+    if "No such file or directory" in data:
+        data = device.shell('cat /sdcard/Documents/zetascout.json')
     data = json.loads(data)
     return data
 
 def remove_data():
     device, client = connect()
-
-    device.shell('rm /storage/emulated/0/Documents/zetascout.json')
+    data = device.shell('cat /storage/emulated/0/Documents/zetascout.json')
+    print(data)
+    if "No such file or directory" in data:
+        device.shell('rm /sdcard/Documents/zetascout.json')
+    else:
+        device.shell('rm /storage/emulated/0/Documents/zetascout.json')
+    
 
 if __name__ == '__main__':
     print(get_data())

@@ -54,7 +54,8 @@ class LineGraph:
 
             if trend_line:
 
-                bestfit, = ax.plot(1, 1)
+                bestfit, = ax.plot(1, 1, "--")
+                bestfit.set_color(line.get_color())
 
                 x_avg = np.average(data_range).tolist()
                 print("Data fo avg:" + str(data_range))
