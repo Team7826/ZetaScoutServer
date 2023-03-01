@@ -11,6 +11,8 @@ import random
 
 class LineGraph:
     def __init__(self, datasets: dict, title="Line Graph", xlabel="Team", ylabel="Points", yheight=100, trend_line=True):
+
+        
         root = tkinter.Tk()
         root.wm_title(title)
 
@@ -18,6 +20,16 @@ class LineGraph:
         ax = fig.add_subplot()
         ax.set_xlabel(xlabel)
         ax.set_ylabel(ylabel)
+
+        self.do_run = True
+        print(datasets)
+        if len(datasets.keys()) == 0:
+            self.do_run = False
+            return
+
+        for key in list(datasets.keys()):
+            if datasets[key] == None:
+                del datasets[key]
 
         ax.set_yticks(datasets[list(datasets.keys())[0]])
 
@@ -88,7 +100,8 @@ class LineGraph:
         canvas.get_tk_widget().pack(side=tkinter.TOP, fill=tkinter.BOTH, expand=True)
 
     def run(self):
-        tkinter.mainloop()
+        if self.do_run:
+            tkinter.mainloop()
 
 if __name__ == "__main__":
     count = 37

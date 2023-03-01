@@ -198,7 +198,7 @@ class UI:
         if comparing_nice_name.strip() == "":
             return
         comparing = self.comparable[comparing_nice_name]
-        print(comparing)
+        print("Comparing: " + comparing + " - AKA - " + comparing_nice_name)
 
         graphing_data = {}
 
@@ -244,7 +244,7 @@ class UI:
         self.loaded_team_data[point_name + suffix] = [None, None, None, None, point_type]
         point = self.loaded_team_data[point_name + suffix]
 
-        self.comparable[point_label] = point_name
+        self.comparable[point_label] = point_name + suffix
 
 
         point[0] = tk.PanedWindow(self.mid_pane, bg=self.COLOR_SCHEME["background"], height=50)
@@ -262,28 +262,32 @@ class UI:
 
     def graph(self, data, just_return=False, selected_team=None):
         if not selected_team: selected_team = self.selected_team
+
+        
         if data == "total_point_avg":
-            data = self.data[selected_team]
-            processed_data = []
-            for match in list(data.keys()):
-                processed_data.append(self.process_points(data[match]))
-            if just_return:
-                return processed_data
-            graph = LineGraph({selected_team: processed_data}, "Average Points for " + selected_team)
-            graph.run()
+            if (selected_team in self.data.keys()):
+                data = self.data[selected_team]
+                processed_data = []
+                for match in list(data.keys()):
+                    processed_data.append(self.process_points(data[match]))
+                if just_return:
+                    return processed_data
+                graph = LineGraph({selected_team: processed_data}, "Average Points for " + selected_team)
+                graph.run()
         
         else:
             data_type = data
-            data = self.data[selected_team]
-            data_category = self.loaded_team_data[data_type][4] # Which categoery it is, auton, teleop, or other
-            processed_data = []
-            for match in list(data.keys()):
-                processed_data.append(int(data[match][0][str(data_category)][data_type.split(".")[0]]))
-            
-            if just_return:
-                return processed_data
-            graph = LineGraph({selected_team: processed_data}, data_type + " - " + selected_team)
-            graph.run()
+            if (selected_team in self.data.keys()):
+                data = self.data[selected_team]
+                data_category = self.loaded_team_data[data_type][4] # Which category it is, auton, teleop, or other
+                processed_data = []
+                for match in list(data.keys()):
+                    processed_data.append(int(data[match][str(data_category)][data_type.split(".")[0]]))
+                
+                if just_return:
+                    return processed_data
+                graph = LineGraph({selected_team: processed_data}, data_type + " - " + selected_team)
+                graph.run()
     
     def process_points(self, match_data):
         # Auton: 0, Teleop: 1, Other: 2
