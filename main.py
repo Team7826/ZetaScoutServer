@@ -2,6 +2,7 @@ import copy as np
 import json
 import os
 import tkinter as tk
+from tkinter.messagebox import askyesno
 from reader import get_data, remove_data
 from graphs.linegraph import LineGraph
 
