@@ -82,6 +82,7 @@ class UI:
         self.output_text.insert(tk.END, "Perform an operation to get output.\n")
         self.output_text.config(state=tk.DISABLED)
 
+
         self.clear_data_button = tk.Button(self.data_load_pane, bg=self.COLOR_SCHEME["background-secondary"], fg=self.COLOR_SCHEME["foreground"], text="!!! Delete Comp Data !!!", border=0, borderwidth=0, command=self.reset_comp)
         self.clear_data_button.grid(row=5, column=0, columnspan=2)
     
@@ -443,6 +444,7 @@ class UI:
             self.load_teams_into_selector()
         except Exception as e:
             self.output_to_device_log(e.with_traceback(None))
+
     def rm_data(self):
         remove_data()
 
@@ -451,11 +453,13 @@ class UI:
             data_file.write(json.dumps(self.data))
     
     def reset_comp(self):
-        with open("data.json", "w+") as data:
-            data.write("{}")
-            self.teams_pane.delete(0, tk.END)
-            self.data = {}
-            self.load_teams_into_selector()
+        sure = askyesno(title='Confirmation', message='Are you sure? This will delete ALL competition data.')
+        if sure:
+            with open("data.json", "w+") as data:
+                data.write("{}")
+                self.teams_pane.delete(0, tk.END)
+                self.data = {}
+                self.load_teams_into_selector()
 
     def run(self):
         self.window.mainloop()
