@@ -316,12 +316,13 @@ class UI:
         points -= int(match_data["2"]["fouls"])*5
 
         return points
+
+    
     
     def show_team(self, event):
-        
-        
         try:
-            team = event.widget.get(event.widget.curselection()[0]) # gets the selected team in the list
+            #print(int(event.widget.get(event.widget.curselection()[0]).split()[0]))
+            team = event.widget.get(event.widget.curselection()[0]).split()[0] # gets the selected team in the list
             self.mid_pane.event_generate("<Configure>")
             self.mid_pane_canvas.yview_moveto(0)
             self.mid_pane_canvas.grid(row=0, column=1, sticky="nsew", padx=0, pady=0)
@@ -375,18 +376,45 @@ class UI:
         for point in processed_data_points.keys():
             self.loaded_team_data[point][2].config(text=processed_data_points[point])
         self.reload_team_scrollbar(None)
+
+
+
     def reload_team_scrollbar(self, e):
         if e:
             print(e.width)
             #self.mid_pane.configure(width=e.width)
         self.mid_pane_canvas.configure(scrollregion=self.mid_pane_canvas.bbox("all"))
+
     def load_teams_into_selector(self):
         teams = list(self.data.keys())
-        teams.sort()
+        teams = sorted(teams)
+        teamsavgpnts = {}
+        #teams.sort()
         self.teams_pane.delete(0, tk.END)
         for i in range(0, len(teams)):
             team = teams[i]
-            self.teams_pane.insert(tk.END, team)
+            teamsavgpnts[team] = str(self.get_avg_pnts(team))
+
+        sorted_teamsavgpnts = sorted([(float(value), key) for (key, value) in teamsavgpnts.items()], reverse = True)
+        print(sorted_teamsavgpnts)
+        for t in sorted_teamsavgpnts:
+            self.teams_pane.insert(tk.END, t[1] + " - " + str(t[0]))
+        
+
+    def get_avg_pnts(self, t):
+        # ap: avgpnts, t = team
+        ap = 0
+
+        matches = self.data[t] # The matches of the team
+        for match in list(matches.keys()): # Iterating over the match numbers
+            match_data = matches[match] # Getting the match data
+            if len(list(match_data.keys())) != 0:
+                ap += self.process_points(match_data) # processes the points
+
+        match_count = len(list(matches.keys()))
+        ap /= match_count
+
+        return ap
 
     def get_match(self):
         return self.match_no_selector.get()
