@@ -203,14 +203,14 @@ class UI:
         graphing_data = {}
 
         for team in self.comparing_teams_list.get(0, tk.END):
-            print(team)
+            #print(team)
             graphing_data[team] = self.graph(comparing, True, team)
         
         LineGraph(graphing_data, "Comparing teams: " + comparing_nice_name)
     
     def add_team_to_comparer(self):
         text = self.compare_team_in.get()
-        print(text)
+        #print(text)
         if text.strip() == "":
             return
         if text in self.comparing_teams_list.get(0, tk.END):
@@ -220,7 +220,7 @@ class UI:
     
     def remove_team_from_comparer(self):
         for i in self.comparing_teams_list.curselection():
-            print(self.comparing_teams_list.get(i))
+            #print(self.comparing_teams_list.get(i))
             self.comparing_teams_list.delete(i)
     
     def FrameWidth(self, event):
@@ -396,7 +396,7 @@ class UI:
             teamsavgpnts[team] = str(self.get_avg_pnts(team))
 
         sorted_teamsavgpnts = sorted([(float(value), key) for (key, value) in teamsavgpnts.items()], reverse = True)
-        print(sorted_teamsavgpnts)
+        #print(sorted_teamsavgpnts)
         for t in sorted_teamsavgpnts:
             self.teams_pane.insert(tk.END, t[1] + " - " + str(t[0]))
         
