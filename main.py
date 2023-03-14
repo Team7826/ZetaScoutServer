@@ -38,9 +38,14 @@ class UI:
         self.comparing = tk.StringVar()
         self.comparable = {}
 
+        self.predicting_red = []
+        self.predicting_blue = []
+
+        self.predicting = tk.StringVar()
+
         self.add_widgets()
 
-        
+        self.reload_predictor_list()
     
     def add_widgets(self):
 
@@ -131,6 +136,43 @@ class UI:
         self.compare_button = tk.Button(self.right_pane, bg=self.COLOR_SCHEME["background-secondary"], fg=self.COLOR_SCHEME["foreground"], text="Compare", borderwidth=0, border=0, command=self.compare)
         self.compare_button.grid(row=5, column=0, sticky="nsew")
 
+        # Predictor
+
+        self.predict_header = tk.Label(self.right_pane, bg=self.COLOR_SCHEME["background"], fg=self.COLOR_SCHEME["foreground"], text="Predict")
+        self.predict_header.grid(column=0, row=6, sticky="new")
+
+        self.predicting = "blue" # Can be "blue" or "red"
+
+        self.predicting_team_list = tk.Listbox(self.right_pane, bg=self.COLOR_SCHEME["background-secondary"], fg=self.COLOR_SCHEME["foreground"], borderwidth=0, border=0)
+        self.predicting_team_list.grid(column=0, row=7, sticky="sew")
+
+        self.predict_button_container = tk.PanedWindow(self.right_pane, bg=self.COLOR_SCHEME["background"], borderwidth=0, border=0)
+        self.predict_button_container.grid(column=0, row=8, sticky="sew")
+
+        self.predict_button_container.columnconfigure(0, weight=1)
+
+        self.predict_red_button = tk.Button(self.predict_button_container, bg=self.COLOR_SCHEME["background-secondary"], fg=self.COLOR_SCHEME["foreground"], text="Red", borderwidth=0, border=0, command=self.predict_red)
+        self.predict_red_button.grid(column=0, row=0, sticky="nsw")
+        self.predict_blue_button = tk.Button(self.predict_button_container, bg=self.COLOR_SCHEME["background-secondary"], fg=self.COLOR_SCHEME["foreground"], text="Blue", borderwidth=0, border=0, command=self.predict_blue)
+        self.predict_blue_button.grid(column=1, row=0, sticky="nse")
+
+        self.predict_add_button = tk.Button(self.predict_button_container, bg=self.COLOR_SCHEME["background-secondary"], fg=self.COLOR_SCHEME["foreground"], text="Add Team", borderwidth=0, border=0, command=self.add_team_to_predictor)
+        self.predict_add_button.grid(column=0, row=1, sticky="nsw")
+        self.predict_rem_button = tk.Button(self.predict_button_container, bg=self.COLOR_SCHEME["background-secondary"], fg=self.COLOR_SCHEME["foreground"], text="Remove Team", borderwidth=0, border=0, command=self.remove_team_from_predictor)
+        self.predict_rem_button.grid(column=1, row=1, sticky="nse")
+
+        self.predict_team_pane = tk.PanedWindow(self.right_pane, bg=self.COLOR_SCHEME["background-secondary"], borderwidth=0, border=0)
+        self.predict_team_pane.grid(column=0, row=9)
+
+        self.predict_team_label = tk.Label(self.predict_team_pane, font=("Arial", 12), bg=self.COLOR_SCHEME["background"], fg=self.COLOR_SCHEME["foreground"], text="Team #")
+        self.predict_team_label.grid(column=0, row=0, sticky="nsew")
+
+        self.predict_team_in = tk.Entry(self.predict_team_pane, bg=self.COLOR_SCHEME["background-secondary"], fg=self.COLOR_SCHEME["foreground"], border=0, borderwidth=0, validate="all", validatecommand=(self.window.register(lambda p: str.isdigit(p) or p==""), "%P"))
+        self.predict_team_in.grid(column=1, row=0, sticky="nsew")
+
+        self.predict_button = tk.Button(self.right_pane, bg=self.COLOR_SCHEME["background-secondary"], fg=self.COLOR_SCHEME["foreground"], text="Predict", borderwidth=0, border=0, command=self.predict)
+        self.predict_button.grid(row=10, column=0, sticky="nsew")
+
         # Middle Pane
         self.mid_pane_canvas= tk.Canvas(self.window, bg=self.COLOR_SCHEME["background-secondary"], border=0, borderwidth=0)
         
@@ -210,6 +252,27 @@ class UI:
         
         LineGraph(graphing_data, "Comparing teams: " + comparing_nice_name)
     
+    def predict(self):
+        red = 0
+        blue = 0
+        for team in self.predicting_red:
+            total = 0
+            data = self.graph("total_point_avg", just_return=True, selected_team=team)
+            for i in data:
+                total += i
+            total /= len(data)
+            red += total
+
+        for team in self.predicting_blue:
+            total = 0
+            data = self.graph("total_point_avg", just_return=True, selected_team=team)
+            for i in data:
+                total += i
+            total /= len(data)
+            blue += total
+        tk.messagebox.showinfo(title="Estimated Match Results", message="The red alliance will get " + str(int(red)) + " points, while the blue alliance " + str(int(blue)) + ".")
+    
+
     def add_team_to_comparer(self):
         text = self.compare_team_in.get()
         #print(text)
@@ -224,6 +287,47 @@ class UI:
         for i in self.comparing_teams_list.curselection():
             #print(self.comparing_teams_list.get(i))
             self.comparing_teams_list.delete(i)
+    
+    def add_team_to_predictor(self):
+        text = self.predict_team_in.get()
+        #print(text)
+        if text.strip() == "":
+            return
+        if text in self.predicting_team_list.get(0, tk.END):
+            return
+        self.predicting_team_list.insert(tk.END, text)
+        if self.predicting == "red":
+            self.predicting_red.append(text)
+        else:
+            self.predicting_blue.append(text)
+        self.predict_team_in.delete(0, tk.END)
+    
+    def remove_team_from_predictor(self):
+        for i in self.predicting_team_list.curselection():
+            #print(self.comparing_teams_list.get(i))
+            self.predicting_team_list.delete(i)
+            if self.predicting == "red":
+                del self.predicting_red[i]
+            else:
+                del self.predicting_blue[i]
+    
+    def predict_red(self):
+        self.predicting = "red"
+        self.reload_predictor_list()
+    def predict_blue(self):
+        self.predicting = "blue"
+        self.reload_predictor_list()
+    
+    def reload_predictor_list(self):
+        self.predict_header["text"] = "Predicting | " + self.predicting
+        self.predicting_team_list.delete(0, tk.END)
+        if self.predicting == "red":
+            load = self.predicting_red
+        else:
+            load = self.predicting_blue
+            
+        for i in load:
+            self.predicting_team_list.insert(tk.END, i)
     
     def FrameWidth(self, event):
         canvas_width = event.width
