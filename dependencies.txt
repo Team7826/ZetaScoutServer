@@ -1,0 +1,4 @@
+git+https://github.com/pybluez/pybluez.git
+customtkinter
+packaging
+requests
