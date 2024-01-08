@@ -1,0 +1,27 @@
+{
+    "Autonomous": {
+        "Left starting area": ["BOOLEAN", 2],
+        "Notes in amp": ["INTEGER", 2],
+        "Notes in speaker": ["INTEGER", 2]
+    },
+
+    "Teleop": {
+
+        "Notes": {
+        "Notes in amp": ["INTEGER", 1],
+        "Notes in speaker": ["INTEGER", 2],
+        "Notes in amplified speaker": ["INTEGER", 5]
+        },
+
+        "Stage": {
+            "Parked on stage": ["BOOLEAN", 1],
+            "Hanging from chains": ["BOOLEAN", 3],
+            "Hanging from lit chains": ["BOOLEAN", 3],
+            "Two robots hanging from chains": ["BOOLEAN", 2],
+            "Notes in trap": ["INTEGER", 5]
+        }
+    },
+
+    "Coopertition bonus": ["BOOLEAN", 0]
+
+}

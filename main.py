@@ -1,10 +1,15 @@
+from bluetoothsocket import BluetoothSocket
 from btpairdialog import BTPairDialog
 import config
 import comp
 import customtkinter
+from devicewidget import DeviceWidget
 import tba
 import competitiondialog
 import matchwidget
+import bluetoothmanager
+import fields
+import devices
 
 customtkinter.set_appearance_mode("System")
 customtkinter.set_default_color_theme("dark-blue")
@@ -17,6 +22,8 @@ class Window:
         self.app.iconbitmap("zetascout.ico")
         
         self.tba = None # To be initialized later
+        self.sockets = []
+        self.old_devices = {}
 
         self.add_widgets()
 
@@ -25,6 +32,7 @@ class Window:
         
         self.refresh_tba_status()
         self.refresh_comp_status()
+        self.refresh_old_device_list()
 
     def add_widgets(self) -> None:
 
@@ -176,7 +184,25 @@ class Window:
     
     def pair_device(self):
         sockets = BTPairDialog(self).show()
-        print(sockets)
+        for socket, device_name, port, address in sockets:
+            devices.devices["paired"][device_name] = [address, port]
+            socket = self.create_socket(socket, device_name, port, address)
+            devicewidget = socket.build_widget(self.deviceList, self)
+            devicewidget.pack(anchor="n")
+        devices.save()
+    
+    def create_socket(self, socket, device_name, port, address):
+        socket = BluetoothSocket(socket, device_name, port, address)
+        self.sockets.append(socket)
+        return socket
+    
+    def refresh_old_device_list(self):
+        if len(self.old_devices.keys()) == 0:
+            for device in devices.devices["paired"].keys():
+                device_data = devices.devices["paired"][device]
+                widget = DeviceWidget(self.deviceList, self, device, None, device_data[1], device_data[0])
+                widget.pack(anchor="n")
+                self.old_devices[device] = widget
     
     def refresh_comp_status(self):
         print("Configuring...")

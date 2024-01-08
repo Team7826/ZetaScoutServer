@@ -1,6 +1,6 @@
 from threading import Thread
 
-def run_as_thread(function, callback, prefunction=None):
+def run_as_thread(function, callback, prefunction=None, post=False):
 
     if prefunction is not None:
         prefunction()

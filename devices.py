@@ -8,3 +8,8 @@ with open("devices.json", "r") as devices_file:
 def save():
     with open("devices.json", "w") as devices_file:
         devices_file.write(json.dumps(devices))
+
+try:
+    devices["paired"]
+except KeyError:
+    devices["paired"] = {}
