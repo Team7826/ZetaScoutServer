@@ -1,1 +1,2 @@
 Make sure that all threads are closed when a dialog is closed
+Make sure match can't start when TBA data isn't loaded

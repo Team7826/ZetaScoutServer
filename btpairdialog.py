@@ -55,6 +55,10 @@ class BTPairDialog:
     def refresh_devices(self, devices):
         for child in self.deviceList.winfo_children():
             child.destroy()
+            
+        if len(devices.keys()) == 0:
+            self.show_status("No devices found. Is Bluetooth on?")
+            return
         
         for device in devices.keys():
             deviceWidget = PairableDeviceWidget(self.deviceList, self, device, devices[device])

@@ -10,12 +10,17 @@ class DeviceWidget(customtkinter.CTkFrame):
         
         self.font = customtkinter.CTkFont(size=20)
         
+        self.grid_columnconfigure(0, weight=1)
+        
         self.thumbnail = customtkinter.CTkImage(Image.open("zs device.png"), size=(500/10, 677/10))
         self.thumbnail_label = customtkinter.CTkLabel(self, image=self.thumbnail, text="")
         self.thumbnail_label.grid(row=0, column=0)
         
         self.deviceName = customtkinter.CTkLabel(self, text=str(device_name), font=self.font)
         self.deviceName.grid(row=0, column=1)
+        
+        self.removeButton = customtkinter.CTkButton(self, text="X", font=self.font, command=self.disconnect)
+        self.removeButton.grid(row=1, column=0)
         
         self.actionButton = customtkinter.CTkButton(self, text="...", font=self.font)
         self.actionButton.grid(row=1, column=1)
@@ -28,7 +33,7 @@ class DeviceWidget(customtkinter.CTkFrame):
         self.update_button()
     
     def update_button(self):
-        self.actionButton.configure(text="Disconnect" if self.socket else "Reconnect", command=self.disconnect if self.socket else self.connect)
+        self.actionButton.configure(text="" if self.socket else "Reconnect", command=print if self.socket else self.connect)
     
     def connect(self):
         service_list = bluetoothmanager.filter_zetascout({self.deviceName.cget("text"): self.address})
@@ -41,6 +46,6 @@ class DeviceWidget(customtkinter.CTkFrame):
         self.update_button()
     
     def disconnect(self):
-        self.socket.close()
+        if self.socket: self.socket.close()
         del devices.devices["paired"][self.deviceName.cget("text")]
         self.destroy()

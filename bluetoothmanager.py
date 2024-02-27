@@ -1,8 +1,11 @@
 import bluetooth
+import time
 
 def scan(is_zetascout=True):
 
     nearby_devices = bluetooth.discover_devices(lookup_names=True)
+
+    print(nearby_devices)
 
     devices = {}
 
@@ -14,9 +17,8 @@ def scan(is_zetascout=True):
 
 def filter_zetascout(devices):
     filtered = {}
-    
+
     for device in devices.keys():
-        
         services = bluetooth.find_service(None, None, devices[device])
         for service in services:
             if "C51F17B3-C044-4FE5-A62A-789A3BC92E1C" in service["service-classes"]:

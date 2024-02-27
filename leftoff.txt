@@ -1,0 +1,2 @@
+Just basically finished the app. It now cycles back to the main menu. Just need more rigidity when it comes to not killing itself.
+Now it seems the next step is to make the server properly stop the match when all devices have returned data. I just don't feel like wading thru code right now.
