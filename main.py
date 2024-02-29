@@ -272,7 +272,8 @@ class Window:
         for socket in self.sockets:
             if socket.status == btstatuscodes.READY_SCOUT:
                 competitor = competitors[i]
-                socket.set_scouting_end_callback(lambda data: self.socket_end_scouting_match(competitor, data))
+                socket.team_scouting = competitor
+                socket.set_scouting_end_callback(lambda competitor, data: self.socket_end_scouting_match(competitor, data))
                 socket.send_data(("B" if i < 3 else "R") + competitor)
                 self.scouting.append(competitor)
                 i += 1
@@ -280,6 +281,7 @@ class Window:
         self.refresh_match_status()
 
     def socket_end_scouting_match(self, competitor, data):
+        print(self.scouting)
         self.scouting.remove(competitor)
         print("Got data for " + competitor + ": " + data)
 
