@@ -15,6 +15,8 @@ import devices
 import scouted
 import dictutil
 import analyzer
+from PIL import Image, ImageTk
+from _tkinter import TclError
 
 customtkinter.set_appearance_mode("System")
 customtkinter.set_default_color_theme("dark-blue")
@@ -22,9 +24,16 @@ customtkinter.set_default_color_theme("dark-blue")
 class Window:
     def __init__(self):
         self.app = customtkinter.CTk()
-        self.app.after(0, lambda:self.app.state('zoomed'))
+        def set_maximized():
+            try: 
+                self.app.state('zoomed') 
+            except TclError as e: pass
+
+        self.app.after(0, set_maximized)
         self.app.title("ZetaScout")
-        self.app.iconbitmap("zetascout.ico")
+        icon = Image.open("zetascout.ico")
+        photo = ImageTk.PhotoImage(icon)
+        self.app.wm_iconphoto(True, photo)
 
         self.tba = None # To be initialized later
         self.sockets = []
