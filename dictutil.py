@@ -1,4 +1,3 @@
-from typing_extensions import final
 import customtkinter
 import analyzer
 import fields

@@ -15,6 +15,8 @@ import devices
 import scouted
 import dictutil
 import analyzer
+from PIL import Image, ImageTk
+from _tkinter import TclError
 
 customtkinter.set_appearance_mode("System")
 customtkinter.set_default_color_theme("dark-blue")
@@ -22,9 +24,16 @@ customtkinter.set_default_color_theme("dark-blue")
 class Window:
     def __init__(self):
         self.app = customtkinter.CTk()
-        self.app.after(0, lambda:self.app.state('zoomed'))
+        def set_maximized():
+            try: 
+                self.app.state('zoomed') 
+            except TclError as e: pass
+
+        self.app.after(0, set_maximized)
         self.app.title("ZetaScout")
-        self.app.iconbitmap("zetascout.ico")
+        icon = Image.open("zetascout.ico")
+        photo = ImageTk.PhotoImage(icon)
+        self.app.wm_iconphoto(True, photo)
 
         self.tba = None # To be initialized later
         self.sockets = []
@@ -272,7 +281,8 @@ class Window:
         for socket in self.sockets:
             if socket.status == btstatuscodes.READY_SCOUT:
                 competitor = competitors[i]
-                socket.set_scouting_end_callback(lambda data: self.socket_end_scouting_match(competitor, data))
+                socket.team_scouting = competitor
+                socket.set_scouting_end_callback(lambda competitor, data: self.socket_end_scouting_match(competitor, data))
                 socket.send_data(("B" if i < 3 else "R") + competitor)
                 self.scouting.append(competitor)
                 i += 1
@@ -280,6 +290,7 @@ class Window:
         self.refresh_match_status()
 
     def socket_end_scouting_match(self, competitor, data):
+        print(self.scouting)
         self.scouting.remove(competitor)
         print("Got data for " + competitor + ": " + data)
 
