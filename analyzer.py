@@ -1,7 +1,7 @@
 import customtkinter
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
-from numpy import arange, polyfit, sqrt
+from numpy import arange, polyfit, sqrt, linalg
 
 from scoutingdataitem import ScoutingDataItem
 
@@ -117,16 +117,19 @@ def calculate_standard_deviation(data: list):
     return round(sqrt(variance), 1)
 
 def calculate_best_fit(data: list):
-    # Fit with polyfit
-    data_x = arange(len(data))
-    b, m = polyfit(data_x, data, 1)
+    try:
+        # Fit with polyfit
+        data_x = arange(len(data))
+        b, m = polyfit(data_x, data, 1)
+    except linalg.LinAlgError as e:
+        return [0, 0, 0]
 
     return data_x, b, m
 
 class AnalyzerCreator:
     def __init__(self, team_data):
         self.app = customtkinter.CTk()
-        self.app.geometry("500x500")
+        self.app.geometry("1000x500")
         self.app.title("Analyzer Creator")
 
         self.app.grid_columnconfigure(0, weight=1)
@@ -163,9 +166,9 @@ class AnalyzerCreator:
         return dictutil.retrieve_nested_value_from_path(self.team_data_values[team], path)
     
     def exit(self):
-        self.datapoints = {}
+        self.datapoints = []
         for child in list(self.addedValues.children.values()):
-            self.datapoints[child.team + ": " + child.data_name] = child.get_data()
+            self.datapoints.append(child.get_data())
         
         print(self.datapoints)
         self.app.quit()
@@ -175,7 +178,7 @@ class AnalyzerCreator:
     def run(self):
         self.app.mainloop()
 
-        return self.datapoints
+        spawn_advanced_analyzer(self.datapoints)
 
 class AnalyzerCreatorValuePopup:
     def __init__(self, team_data):

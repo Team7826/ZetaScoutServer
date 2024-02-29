@@ -1,1 +1,188 @@
-{"matches": [{"frc5505": {"Autonomous": {"Left starting area": 1, "Notes in amp": 0, "Notes in speaker": 3}, "Teleop": {"Notes": {"Notes in amp": 0, "Notes in speaker": 0, "Notes in amplified speaker": 0}, "Stage": {"Parked on stage": 0, "Hanging from chains": 0, "Hanging from lit chains": 0, "Two robots hanging from chains": 0, "Notes in trap": 0}}, "Coopertition bonus": 0}}, {"frc5505": {"Autonomous": {"Left starting area": 1, "Notes in amp": 0, "Notes in speaker": 8}, "Teleop": {"Notes": {"Notes in amp": 0, "Notes in speaker": 0, "Notes in amplified speaker": 0}, "Stage": {"Parked on stage": 0, "Hanging from chains": 0, "Hanging from lit chains": 0, "Two robots hanging from chains": 0, "Notes in trap": 0}}, "Coopertition bonus": 0}, "frc7250": {"Autonomous": {"Left starting area": 0, "Notes in amp": 0, "Notes in speaker": 0}, "Teleop": {"Notes": {"Notes in amp": 0, "Notes in speaker": 0, "Notes in amplified speaker": 0}, "Stage": {"Parked on stage": 0, "Hanging from chains": 0, "Hanging from lit chains": 0, "Two robots hanging from chains": 0, "Notes in trap": 0}}, "Coopertition bonus": 0}}, {"frc857": {"Autonomous": {"Left starting area": 0, "Notes in amp": 0, "Notes in speaker": 0}, "Teleop": {"Notes": {"Notes in amp": 0, "Notes in speaker": 0, "Notes in amplified speaker": 0}, "Stage": {"Parked on stage": 0, "Hanging from chains": 0, "Hanging from lit chains": 0, "Two robots hanging from chains": 0, "Notes in trap": 0}}, "Coopertition bonus": 0}, "frc5314": {"Autonomous": {"Left starting area": 0, "Notes in amp": 0, "Notes in speaker": 0}, "Teleop": {"Notes": {"Notes in amp": 0, "Notes in speaker": 0, "Notes in amplified speaker": 0}, "Stage": {"Parked on stage": 0, "Hanging from chains": 0, "Hanging from lit chains": 0, "Two robots hanging from chains": 0, "Notes in trap": 0}}, "Coopertition bonus": 0}}]}
+{
+  "matches": [
+    {
+      "frc5505": {
+        "Autonomous": {
+          "Left starting area": 1,
+          "Notes in amp": 0,
+          "Notes in speaker": 3
+        },
+        "Teleop": {
+          "Notes": {
+            "Notes in amp": 0,
+            "Notes in speaker": 0,
+            "Notes in amplified speaker": 0
+          },
+          "Stage": {
+            "Parked on stage": 0,
+            "Hanging from chains": 0,
+            "Hanging from lit chains": 0,
+            "Two robots hanging from chains": 0,
+            "Notes in trap": 0
+          }
+        },
+        "Coopertition bonus": 0
+      },
+      "frc7250": {
+        "Autonomous": {
+          "Left starting area": 1,
+          "Notes in amp": 100,
+          "Notes in speaker": 0
+        },
+        "Teleop": {
+          "Notes": {
+            "Notes in amp": 0,
+            "Notes in speaker": 0,
+            "Notes in amplified speaker": 0
+          },
+          "Stage": {
+            "Parked on stage": 0,
+            "Hanging from chains": 0,
+            "Hanging from lit chains": 0,
+            "Two robots hanging from chains": 0,
+            "Notes in trap": 0
+          }
+        },
+        "Coopertition bonus": 0
+      }
+    },
+    {
+      "frc5505": {
+        "Autonomous": {
+          "Left starting area": 1,
+          "Notes in amp": 0,
+          "Notes in speaker": 8
+        },
+        "Teleop": {
+          "Notes": {
+            "Notes in amp": 0,
+            "Notes in speaker": 0,
+            "Notes in amplified speaker": 0
+          },
+          "Stage": {
+            "Parked on stage": 0,
+            "Hanging from chains": 0,
+            "Hanging from lit chains": 0,
+            "Two robots hanging from chains": 0,
+            "Notes in trap": 0
+          }
+        },
+        "Coopertition bonus": 0
+      },
+      "frc7250": {
+        "Autonomous": {
+          "Left starting area": 1,
+          "Notes in amp": 0,
+          "Notes in speaker": 0
+        },
+        "Teleop": {
+          "Notes": {
+            "Notes in amp": 0,
+            "Notes in speaker": 0,
+            "Notes in amplified speaker": 0
+          },
+          "Stage": {
+            "Parked on stage": 0,
+            "Hanging from chains": 0,
+            "Hanging from lit chains": 0,
+            "Two robots hanging from chains": 0,
+            "Notes in trap": 0
+          }
+        },
+        "Coopertition bonus": 0
+      }
+    },
+    {
+        "frc5505": {
+          "Autonomous": {
+            "Left starting area": 1,
+            "Notes in amp": 0,
+            "Notes in speaker": 3
+          },
+          "Teleop": {
+            "Notes": {
+              "Notes in amp": 0,
+              "Notes in speaker": 0,
+              "Notes in amplified speaker": 0
+            },
+            "Stage": {
+              "Parked on stage": 0,
+              "Hanging from chains": 0,
+              "Hanging from lit chains": 0,
+              "Two robots hanging from chains": 0,
+              "Notes in trap": 0
+            }
+          },
+          "Coopertition bonus": 0
+        },
+        "frc7250": {
+          "Autonomous": {
+            "Left starting area": 1,
+            "Notes in amp": 100,
+            "Notes in speaker": 0
+          },
+          "Teleop": {
+            "Notes": {
+              "Notes in amp": 0,
+              "Notes in speaker": 0,
+              "Notes in amplified speaker": 0
+            },
+            "Stage": {
+              "Parked on stage": 0,
+              "Hanging from chains": 0,
+              "Hanging from lit chains": 0,
+              "Two robots hanging from chains": 0,
+              "Notes in trap": 0
+            }
+          },
+          "Coopertition bonus": 0
+        }
+      },
+    {
+      "frc857": {
+        "Autonomous": {
+          "Left starting area": 0,
+          "Notes in amp": 0,
+          "Notes in speaker": 0
+        },
+        "Teleop": {
+          "Notes": {
+            "Notes in amp": 0,
+            "Notes in speaker": 0,
+            "Notes in amplified speaker": 0
+          },
+          "Stage": {
+            "Parked on stage": 0,
+            "Hanging from chains": 0,
+            "Hanging from lit chains": 0,
+            "Two robots hanging from chains": 0,
+            "Notes in trap": 0
+          }
+        },
+        "Coopertition bonus": 0
+      },
+      "frc5314": {
+        "Autonomous": {
+          "Left starting area": 0,
+          "Notes in amp": 0,
+          "Notes in speaker": 0
+        },
+        "Teleop": {
+          "Notes": {
+            "Notes in amp": 0,
+            "Notes in speaker": 0,
+            "Notes in amplified speaker": 0
+          },
+          "Stage": {
+            "Parked on stage": 0,
+            "Hanging from chains": 0,
+            "Hanging from lit chains": 0,
+            "Two robots hanging from chains": 0,
+            "Notes in trap": 0
+          }
+        },
+        "Coopertition bonus": 0
+      }
+    }
+  ]
+}
