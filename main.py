@@ -25,8 +25,8 @@ class Window:
     def __init__(self):
         self.app = customtkinter.CTk()
         def set_maximized():
-            try: 
-                self.app.state('zoomed') 
+            try:
+                self.app.state('zoomed')
             except TclError as e: pass
 
         self.app.after(0, set_maximized)
@@ -272,40 +272,26 @@ class Window:
         self.refresh_team_data()
 
     def start_next_match(self):
-        self.current_match += 1
-        self.match_currently_scouting = self.current_match
-        self.scouting = []
-        competitors_raw = comp.comp["matches"][self.current_match]
-        competitors = competitors_raw[0] + competitors_raw[1]
-        i = 0
-        for socket in self.sockets:
-            if socket.status == btstatuscodes.READY_SCOUT:
-                competitor = competitors[i]
-                socket.team_scouting = competitor
-                socket.set_scouting_end_callback(lambda competitor, data: self.socket_end_scouting_match(competitor, data))
-                socket.send_data(("B" if i < 3 else "R") + competitor)
-                self.scouting.append(competitor)
-                i += 1
+        self.select_match(self.current_match + 1)
 
-        self.refresh_match_status()
-
-    def socket_end_scouting_match(self, competitor, data):
+    def socket_end_scouting_match(self, competitor, match, data):
         print(self.scouting)
         self.scouting.remove(competitor)
-        print("Got data for " + competitor + ": " + data)
+        print("Got data for " + competitor + " in " + str(match) + ": " + data)
 
-        while len(scouted.scouted["matches"]) < self.current_match+1:
+        while len(scouted.scouted["matches"]) < match+1:
             scouted.scouted["matches"].append({})
 
-        scouted.scouted["matches"][self.current_match][competitor] = json.loads(data)
+        scouted.scouted["matches"][match][competitor] = json.loads(data)
 
         if len(self.scouting) == 0:
             print("No more teams to scout!")
             self.end_scouting_match()
 
+        scouted.save()
+
     def end_scouting_match(self):
         print("Done")
-        scouted.save()
         self.match_currently_scouting = -1
         self.refresh_match_status()
 
@@ -342,10 +328,37 @@ class Window:
 
         i = 1
         for match in comp.comp["matches"]:
-            matchWidget = matchwidget.MatchWidget(self.matchList, self, i)
+            matchWidget = matchwidget.MatchWidget(self.matchList, self, i, self.select_match)
             matchWidget.grid(row=i-1, column=0)
             i += 1
         print("Done")
+
+    def select_match(self, match):
+        self.current_match = match
+        self.match_currently_scouting = self.current_match
+        self.scouting = []
+        competitors_raw = comp.comp["matches"][self.current_match]
+        competitors = competitors_raw[0] + competitors_raw[1]
+
+        if len(scouted.scouted["matches"]) > self.current_match:
+            for competitor in scouted.scouted["matches"][self.current_match].keys():
+                try: competitors.remove(competitor)
+                except ValueError: pass
+        i = 0
+        for socket in self.sockets:
+            if socket.status == btstatuscodes.READY_SCOUT:
+
+                try: competitor = competitors[i]
+                except IndexError: break
+
+                socket.team_scouting = competitor
+                socket.match_scouting = self.current_match
+                socket.set_scouting_end_callback(lambda competitor, match, data: self.socket_end_scouting_match(competitor, match, data))
+                socket.send_data(("B" if i < 3 else "R") + competitor)
+                self.scouting.append(competitor)
+                i += 1
+
+        self.refresh_match_status()
 
     def select_team(self):
 

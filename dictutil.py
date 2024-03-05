@@ -9,6 +9,9 @@ This is exclusively for the calculation of point values for matches.
 def recursively_count_values_with_conversion(dictionary: dict, conversion: dict):
     value = 0
 
+    print("yes")
+    print(dictionary)
+    print(conversion) #TODO: The problem is that the percentage needs to be calculated earlier in the pipeline by a recursive dict checker that finds percentages and calculates them
 
     for key in dictionary.keys():
         if type(dictionary[key]) == int:

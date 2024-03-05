@@ -2,15 +2,23 @@
     "Autonomous": {
         "Left starting area": ["BOOLEAN", 2],
         "Notes in amp": ["INTEGER", 2],
-        "Notes in speaker": ["INTEGER", 2]
+        "Notes missed in amp": ["INTEGER", 0],
+        "Amp note scoring percentage": ["PERCENTAGE", ["Notes in amp", "Notes missed in amp"]],
+        "Notes in speaker": ["INTEGER", 2],
+        "Notes missed in speaker": ["INTEGER", 0],
+        "Speaker note scoring percentage": ["PERCENTAGE", ["Notes in speaker", "Notes missed in speaker"]]
     },
 
     "Teleop": {
 
         "Notes": {
         "Notes in amp": ["INTEGER", 1],
+        "Notes missed in amp": ["INTEGER", 0],
+        "Amp note scoring percentage": ["PERCENTAGE", ["Notes in amp", "Notes missed in amp"]],
         "Notes in speaker": ["INTEGER", 2],
-        "Notes in amplified speaker": ["INTEGER", 5]
+        "Notes in amplified speaker": ["INTEGER", 5],
+        "Notes missed in speaker": ["INTEGER", 0],
+        "Speaker note scoring percentage": ["PERCENTAGE", [["Notes in speaker", "Notes in amplified speaker"], "Notes missed in speaker"]]
         },
 
         "Stage": {
@@ -18,10 +26,12 @@
             "Hanging from chains": ["BOOLEAN", 3],
             "Hanging from lit chains": ["BOOLEAN", 3],
             "Two robots hanging from chains": ["BOOLEAN", 2],
-            "Notes in trap": ["INTEGER", 5]
+            "Note in trap": ["BOOLEAN", 5]
         }
     },
 
-    "Coopertition bonus": ["BOOLEAN", 0]
+    "Coopertition bonus": ["BOOLEAN", 0],
+
+    "Notes (play style, general competence, etc.)": ["TEXT"]
 
 }

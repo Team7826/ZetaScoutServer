@@ -23,6 +23,7 @@ class BluetoothSocket:
         self.recieved_scout_data = None
 
         self.team_scouting = None
+        self.match_scouting = None
 
         self.update_thread = threading.Thread(target=self._update)
         self.update_thread.start()
@@ -41,6 +42,7 @@ class BluetoothSocket:
             print(data)
             if data:
                 if data == btstatuscodes.GET_FIELDS:
+                    print("Sending data...")
                     self.send_field_data()
                 elif data == btstatuscodes.READY_SCOUT:
                     self.status = btstatuscodes.READY_SCOUT
@@ -48,7 +50,7 @@ class BluetoothSocket:
                     self.recieved_scout_data = self.receive_until(btstatuscodes.END_RESPONSE)
                     print(self.recieved_scout_data)
                     self.send_data("")
-                    self.scouting_end_callback(self.team_scouting, self.recieved_scout_data)
+                    self.scouting_end_callback(self.team_scouting, self.match_scouting, self.recieved_scout_data)
 
     def recieve_data(self):
         return bluetoothmanager.recvall(self.sock).decode()
@@ -62,7 +64,9 @@ class BluetoothSocket:
                 return data.rstrip(end)
 
     def send_data(self, data):
+        print("Sending data on socket: " + str(data))
         self.sock.send((str(data) + btstatuscodes.END_RESPONSE).encode())
+        print("Sent.")
 
     def send_field_data(self):
         self.send_data(fields.fields)
