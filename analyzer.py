@@ -1,7 +1,7 @@
 import customtkinter
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
-from numpy import arange, polyfit, sqrt
+from numpy import arange, polyfit, sqrt, linalg
 
 from scoutingdataitem import ScoutingDataItem
 
@@ -117,16 +117,19 @@ def calculate_standard_deviation(data: list):
     return round(sqrt(variance), 1)
 
 def calculate_best_fit(data: list):
-    # Fit with polyfit
-    data_x = arange(len(data))
-    b, m = polyfit(data_x, data, 1)
+    try:
+        # Fit with polyfit
+        data_x = arange(len(data))
+        b, m = polyfit(data_x, data, 1)
+    except linalg.LinAlgError as e:
+        return [0, 0, 0]
 
     return data_x, b, m
 
 class AnalyzerCreator:
     def __init__(self, team_data):
         self.app = customtkinter.CTk()
-        self.app.geometry("500x500")
+        self.app.geometry("1000x500")
         self.app.title("Analyzer Creator")
 
         self.app.grid_columnconfigure(0, weight=1)
@@ -135,15 +138,24 @@ class AnalyzerCreator:
         self.team_data = team_data
 
         addButton = customtkinter.CTkButton(self.app, text="Add Datapoint", command=self.add_value)
-        addButton.grid(row=0, column=0)
+        addButton.grid(row=0, column=0, sticky="EW")
 
         self.addedValues = customtkinter.CTkScrollableFrame(self.app)
-        self.addedValues.grid(row=1, column=0)
+        self.addedValues.grid(row=1, column=0, sticky="NSEW")
+
+        doneButton = customtkinter.CTkButton(self.app, text="Finish & Create", command=self.exit)
+        doneButton.grid(row=2, column=0, sticky="EW")
+
+        self.datapoints = {}
+        self.team_data_values = {}
 
     def add_value(self):
         popup = AnalyzerCreatorValuePopup(self.team_data)
-        team, attribute = popup.run()
-        print(team, attribute)
+        team, attribute, team_data_values = popup.run()
+
+        self.team_data_values[team] = team_data_values
+        self.team_data_values[team].update(dictutil.convert_list_of_dict_to_dict_with_list(self.team_data[team]))
+
         if team == "-" or attribute == "-":
             return
 
@@ -151,41 +163,50 @@ class AnalyzerCreator:
         widget.pack(fill="x")
 
     def get_team_data(self, team, path):
-        return dictutil.retrieve_nested_value_from_path(dictutil.convert_list_of_dict_to_dict_with_list(self.team_data[team]), path)
+        return dictutil.retrieve_nested_value_from_path(self.team_data_values[team], path)
+    
+    def exit(self):
+        self.datapoints = []
+        for child in list(self.addedValues.children.values()):
+            self.datapoints.append(child.get_data())
+        
+        print(self.datapoints)
+        self.app.quit()
+        self.app.destroy()
 
 
     def run(self):
         self.app.mainloop()
 
+        spawn_advanced_analyzer(self.datapoints)
+
 class AnalyzerCreatorValuePopup:
     def __init__(self, team_data):
         self.app = customtkinter.CTk()
-        self.app.geometry("500x500")
+        self.app.geometry("500x100")
         self.app.title("Add a value...")
 
         self.app.grid_columnconfigure(0, weight=1)
+        self.app.grid_rowconfigure(2, weight=1)
 
         self.team_data = team_data
 
         self.team_data_values = {}
 
         self.teamDropdown = customtkinter.CTkComboBox(self.app, values=["-"] + list(team_data.keys()), command=self.select_team)
-        self.teamDropdown.grid(row=0, column=0)
+        self.teamDropdown.grid(row=0, column=0, sticky=["NEW"])
 
         self.dataPointDropdown = customtkinter.CTkComboBox(self.app, values=["-"])
-        self.dataPointDropdown.grid(row=1, column=0)
+        self.dataPointDropdown.grid(row=1, column=0, sticky=["NEW"])
 
         self.finishButton = customtkinter.CTkButton(self.app, command=self.exit, text="Finish & Add")
-        self.finishButton.grid(row=2, column=0)
+        self.finishButton.grid(row=2, column=0, sticky=["NSEW"])
 
     def select_team(self, team):
+        self.team = team
         values = {}
         points_autonomous, points_teleop, points_total = dictutil.calculate_points(self.team_data[team])
         values.update({"Total Points": points_total, "Autonomous Points": points_autonomous, "Teleop Points": points_teleop})
-
-        values.update()
-
-        print(self.team_data[team])
 
         self.dataPointDropdown.configure(
             values=
@@ -204,7 +225,7 @@ class AnalyzerCreatorValuePopup:
 
     def run(self):
         self.app.mainloop()
-        return self.team, self.attribute
+        return self.team, self.attribute, self.team_data_values
 
 def spawn_analyzer_creator(team_data: dict):
 
