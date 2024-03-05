@@ -11,11 +11,14 @@ def recursively_count_values_with_conversion(dictionary: dict, conversion: dict)
 
     print("yes")
     print(dictionary)
-    print(conversion) #TODO: The problem is that the percentage needs to be calculated earlier in the pipeline by a recursive dict checker that finds percentages and calculates them
+    print(conversion)
 
     for key in dictionary.keys():
-        if type(dictionary[key]) == int:
+        if type(dictionary[key]) == int or type(dictionary[key]) == float:
+            if type(conversion[key][1]) == list:
+                continue
             value += dictionary[key] * conversion[key][1]
+
         else:
             value += recursively_count_values_with_conversion(dictionary[key], conversion[key])
 
@@ -34,7 +37,7 @@ def recursively_average_all_values(values: "list[dict]"):
 
 def recursively_add_values_to_average(dictionary, averages):
     for key in dictionary.keys():
-        if type(dictionary[key]) == int:
+        if type(dictionary[key]) == int or type(dictionary[key]) == float:
             try:
                 averages[key]
             except:
@@ -82,7 +85,7 @@ def create_analysis_button(element_frame, element, values):
 
 def _compile_data_points(target_dictionary, source_dictionary):
         for key in source_dictionary.keys():
-            if type(source_dictionary[key]) == int:
+            if type(source_dictionary[key]) == int or type(source_dictionary[key]) == float:
                 target_dictionary[key] = source_dictionary[key]
             elif type(source_dictionary[key]) == dict:
                 target_dictionary[key] = {}
@@ -104,6 +107,8 @@ def calculate_points(team_data):
     points_teleop = []
     points_total = []
     for match in team_data:
+
+        print(match["Autonomous"])
         points_autonomous.append(recursively_count_values_with_conversion(match["Autonomous"], fields.fields["Autonomous"]))
         points_teleop.append(recursively_count_values_with_conversion(match["Teleop"], fields.fields["Teleop"]))
 
@@ -161,3 +166,35 @@ def retrieve_nested_value_from_path(dictionary, value_path):
             return retrieve_nested_value_from_path(dictionary[path_element], "/".join(path[1:]))
         else:
             return dictionary[path_element]
+
+def calculate_nested_dict_percentages(dictionary):
+
+    for item in dictionary.keys():
+        if type(dictionary[item]) == list:
+            target = dictionary[item]
+            if target[0] == "PERCENTAGE":
+                criteria = target[1]
+                plus = 0
+                minus = 0
+
+                if type(criteria[0]) == str:
+                    criteria[0] = [criteria[0]]
+                if type(criteria[1]) == str:
+                    criteria[1] = [criteria[1]]
+
+                for plus_item in criteria[0]:
+                    plus += dictionary[plus_item]
+                for minus_item in criteria[1]:
+                    minus += dictionary[minus_item]
+                if plus + minus == 0:
+                    dictionary[item] = 0
+                else:
+                    dictionary[item] = plus / (plus+minus)
+        elif type(dictionary[item]) == dict:
+            dictionary[item] = calculate_nested_dict_percentages(dictionary[item])
+    return dictionary
+
+if __name__ == "__main__":
+    print(calculate_nested_dict_percentages(
+        {"Autonomous":{"Left starting area":0,"Notes in amp":10,"Notes missed in amp":9,"Amp note scoring percentage":["PERCENTAGE",["Notes in amp","Notes missed in amp"]],"Notes in speaker":0,"Notes missed in speaker":0,"Speaker note scoring percentage":["PERCENTAGE",["Notes in speaker","Notes missed in speaker"]]},"Teleop":{"Notes":{"Notes in amp":0,"Notes missed in amp":0,"Amp note scoring percentage":["PERCENTAGE",["Notes in amp","Notes missed in amp"]],"Notes in speaker":5,"Notes in amplified speaker":5,"Notes missed in speaker":10,"Speaker note scoring percentage":["PERCENTAGE",[["Notes in speaker","Notes in amplified speaker"],"Notes missed in speaker"]]},"Stage":{"Parked on stage":0,"Hanging from chains":0,"Hanging from lit chains":0,"Two robots hanging from chains":0,"Note in trap":0}},"Coopertition bonus":0,"Notes (play style, general competence, etc.)":""}
+    ))

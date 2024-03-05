@@ -277,12 +277,12 @@ class Window:
     def socket_end_scouting_match(self, competitor, match, data):
         print(self.scouting)
         self.scouting.remove(competitor)
-        print("Got data for " + competitor + " in " + str(match) + ": " + data)
+        print("Got data for " + competitor + " in " + str(match) + ": " + str(data))
 
         while len(scouted.scouted["matches"]) < match+1:
             scouted.scouted["matches"].append({})
 
-        scouted.scouted["matches"][match][competitor] = json.loads(data)
+        scouted.scouted["matches"][match][competitor] = data
 
         if len(self.scouting) == 0:
             print("No more teams to scout!")
@@ -304,8 +304,8 @@ class Window:
             devicewidget.pack(anchor="n")
         devices.save()
 
-    def create_socket(self, socket, device_name, port, address):
-        socket = BluetoothSocket(socket, device_name, port, address)
+    def create_socket(self, socket, device_name, port, address, device_widget):
+        socket = BluetoothSocket(socket, device_name, port, address, device_widget)
         self.sockets.append(socket)
         return socket
 
