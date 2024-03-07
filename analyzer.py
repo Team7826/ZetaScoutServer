@@ -4,6 +4,7 @@ from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationTool
 from numpy import arange, polyfit, sqrt, linalg
 
 from scoutingdataitem import ScoutingDataItem
+import dictutil
 
 def spawn_analyzer(title, data):
     print(title, data)

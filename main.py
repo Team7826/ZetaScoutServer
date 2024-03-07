@@ -197,6 +197,9 @@ class Window:
         self.matchList = customtkinter.CTkScrollableFrame(matchFrame)
         self.matchList.grid(row=4, column=0)
 
+        self.analyzerBuilder = customtkinter.CTkButton(matchFrame, text="Advanced Analyzer", command=lambda: analyzer.spawn_analyzer_creator(self.compiled_team_data))
+        self.analyzerBuilder.grid(row=5, column=0)
+
         ### END MATCH FRAME
 
     def refresh_tba_status(self):
@@ -299,7 +302,7 @@ class Window:
         sockets = BTPairDialog(self).show()
         for socket, device_name, port, address in sockets:
             devices.devices["paired"][device_name] = [address, port]
-            socket = self.create_socket(socket, device_name, port, address)
+            socket = self.create_socket(socket, device_name, port, address, None)
             devicewidget = socket.build_widget(self.deviceList, self)
             devicewidget.pack(anchor="n")
         devices.save()
